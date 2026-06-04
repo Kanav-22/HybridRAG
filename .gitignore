@@ -1,0 +1,6 @@
+.env
+faiss_index.bin
+bm25_index.pkl
+__pycache__/
+*.pyc
+.venv/

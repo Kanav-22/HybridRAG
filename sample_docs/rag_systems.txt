@@ -1,0 +1,13 @@
+Retrieval Augmented Generation Systems
+
+RAG systems combine information retrieval with large language model generation.
+The retrieval step fetches relevant documents from a knowledge base using similarity search.
+Vector databases store document embeddings for fast approximate nearest neighbour search.
+FAISS is an open-source library by Meta for efficient similarity search over dense vectors.
+BM25 is a probabilistic keyword-based ranking function used in traditional information retrieval.
+Hybrid search combines dense vector retrieval with sparse keyword retrieval for better coverage.
+Reciprocal Rank Fusion merges multiple ranked lists by computing inverse rank scores.
+Chunking strategy affects retrieval quality - chunks should be semantically coherent.
+Re-ranking improves retrieval by applying a cross-encoder model to re-score retrieved documents.
+Hallucination in RAG occurs when the LLM generates content not supported by retrieved documents.
+Grounding answers to source documents reduces hallucination and improves factual accuracy.

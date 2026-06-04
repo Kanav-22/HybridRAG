@@ -1,0 +1,11 @@
+langchain
+langgraph
+langchain-groq
+faiss-cpu
+rank_bm25
+sentence-transformers
+fastapi
+uvicorn
+python-dotenv
+langchain-community
+numpy

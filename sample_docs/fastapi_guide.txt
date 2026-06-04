@@ -1,0 +1,12 @@
+FastAPI Framework Guide
+
+FastAPI is a modern, high-performance Python web framework for building APIs.
+FastAPI uses Python type hints to automatically generate request validation and documentation.
+The framework automatically generates interactive API documentation at /docs using Swagger UI.
+FastAPI is built on Starlette for web handling and Pydantic for data validation.
+Async support in FastAPI allows handling thousands of concurrent requests efficiently.
+Path parameters are declared directly in the route decorator using curly braces.
+Query parameters are function parameters not included in the path.
+Request bodies are defined using Pydantic BaseModel classes.
+FastAPI middleware can be used to add CORS support, authentication, and logging.
+Dependency injection in FastAPI allows sharing logic like database connections across routes.
