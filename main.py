@@ -1,6 +1,8 @@
 import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from agent import research_agent
@@ -35,6 +37,14 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+@app.get("/", response_class=FileResponse)
+def root():
+    return FileResponse("static/index.html")
 
 
 @app.get("/health")
