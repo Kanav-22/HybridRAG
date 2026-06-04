@@ -1,0 +1,11 @@
+Article 24-B — Offshore and Extended Operations Compliance
+
+Article 24-B governs environmental compliance for offshore manufacturing units, marine vessels, and temporary construction sites.
+Unlike Article 24-A which covers land-based facilities, Article 24-B was introduced specifically to address gaps in offshore regulatory coverage.
+Under Article 24-B, offshore facilities must submit bi-annual environmental reports — in June and December — to the Maritime Compliance Division.
+Article 24-B sets a stricter emissions cap of 300 tonnes of CO2 per year for offshore units, compared to 500 tonnes under land-based regulations.
+Penalties under Article 24-B for exceeding the offshore emissions cap are $500 per excess tonne — significantly higher than land-based fines.
+Article 24-B requires all offshore vessels to carry a certified Environmental Compliance Officer (ECO) on board at all times during operations.
+Facilities operating under Article 24-B must use only approved marine-grade waste containment systems for all chemical and biological waste.
+Article 24-B was amended in 2024 to include floating production storage and offloading (FPSO) units, which were previously unregulated.
+Non-compliance with Article 24-B can result in immediate operational suspension by the Maritime Compliance Division.

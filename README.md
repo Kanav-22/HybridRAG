@@ -24,11 +24,17 @@ Planner -> Retriever (BM25 + FAISS + RRF) -> Grader -> Synthesizer
 
 ```bash
 pip install -r requirements.txt
+
+# IMPORTANT: Run this before starting the API — builds FAISS + BM25 indexes from your documents
 python indexer.py
+
 python main.py
 ```
 
-API available at `http://localhost:8000`
+> **Note:** Chunking splits documents into 500-character chunks (with 50-character overlap) — not tokens.
+> Re-run `python indexer.py` any time you add or modify documents in `sample_docs/`.
+
+API + Chat UI available at `http://localhost:8000`
 
 ```bash
 curl -X POST "http://localhost:8000/research" \
@@ -38,6 +44,36 @@ curl -X POST "http://localhost:8000/research" \
 
 ## Endpoints
 
+- `GET /` — Chat UI (browser-friendly interface)
 - `POST /research` — run hybrid RAG agent
 - `GET /health` — health check
 - `GET /docs` — auto-generated Swagger UI
+
+## Screenshots
+
+> _Screenshots will be added here after local testing is complete._
+>
+> Planned: `screenshots/chat-ui.png`, `screenshots/api-response.png`
+
+## HuggingFace Spaces
+
+> _Deployment URL will be added here once the Space is configured._
+>
+> Planned: `https://huggingface.co/spaces/<your-username>/HybridRAG`
+
+## Adding Your Own Documents
+
+1. Drop `.txt` files into `sample_docs/`
+2. Run `python indexer.py` to rebuild indexes
+3. Restart `python main.py`
+
+For PDFs or Word docs, convert to `.txt` first:
+```bash
+# PDF
+pip install pymupdf
+python -c "import fitz; doc=fitz.open('file.pdf'); open('file.txt','w').write('\n'.join([p.get_text() for p in doc]))"
+
+# Word
+pip install python-docx
+python -c "from docx import Document; d=Document('file.docx'); open('file.txt','w').write('\n'.join([p.text for p in d.paragraphs]))"
+```

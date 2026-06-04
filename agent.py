@@ -70,7 +70,7 @@ def grader(state: AgentState) -> AgentState:
         ]
         response = llm.invoke(messages)
         result = response.content.strip().lower()
-        if "relevant" in result and "not" not in result:
+        if result.strip().rstrip('.') == "relevant":
             relevant_count += 1
 
     majority_relevant = relevant_count >= (len(documents) / 2)
