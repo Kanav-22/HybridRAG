@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+
+      # Fusion and chunking are pure logic - they need neither the indexes nor a model,
+      # so they run first and fail fast.
+      - name: Unit tests
+        run: pytest tests/test_fusion.py tests/test_indexing.py -q
+
+      # Downloads all-MiniLM-L6-v2 and embeds the sample corpus.
+      - name: Build indexes
+        run: python indexer.py
+
+      # Exercises real BM25 + FAISS retrieval over the built indexes. No LLM, no API key.
+      - name: Retrieval integration tests
+        run: pytest tests/test_retrieval_integration.py -q
+
+      - name: Full suite
+        run: pytest -q

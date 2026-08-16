@@ -5,6 +5,9 @@ search in parallel**, fuses the two rankings with **Reciprocal Rank Fusion (RRF)
 drives the result through a **four-node LangGraph state machine** with a self-correcting
 grader loop. Served as a FastAPI app with a chat UI and an OpenAPI surface.
 
+[![CI](https://github.com/Kanav-22/HybridRAG/actions/workflows/ci.yml/badge.svg)](https://github.com/Kanav-22/HybridRAG/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-29%20passing-3fb950)](tests/)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.11-3776ab?logo=python&logoColor=white)](requirements.txt)
 [![LangGraph](https://img.shields.io/badge/LangGraph-state%20machine-1c7ed6)](agent.py)
 [![FAISS](https://img.shields.io/badge/FAISS-IndexFlatL2-orange)](retriever.py)
@@ -189,6 +192,35 @@ curl -X POST http://localhost:8000/research \
 Every call prints the full node-by-node trace to the server console — see
 [`docs/pipeline-trace.md`](docs/pipeline-trace.md) for annotated real traces.
 
+### Tests
+
+```bash
+pytest -q
+```
+
+**29 tests**, no API key required — nothing in the suite calls an LLM.
+
+| File | Scope | Needs indexes? |
+|---|---|---|
+| `tests/test_fusion.py` | RRF maths as pure logic — built via `__new__`, so no model loads | No |
+| `tests/test_indexing.py` | Chunk size/overlap invariants, BM25 tokenisation, indexer↔retriever config agreement | No |
+| `tests/test_retrieval_integration.py` | Real BM25 + FAISS retrieval over the built indexes | Yes — skips cleanly without them |
+
+The tests worth reading are the ones that pin the project's actual claim:
+
+- **`test_agreement_beats_a_single_retrievers_top_hit`** — a document ranked #3 by *both*
+  retrievers must outrank one ranked #1 by only one of them (`2/63 > 1/61`). This is the
+  property the whole design rests on.
+- **`test_rank_is_positional_not_score_based`** — fusion must produce identical output
+  when the incoming scores are wildly different but the ranks are the same. BM25 relevance
+  and FAISS L2 distance are not comparable quantities; if this test ever fails, someone
+  has started normalising scores against each other.
+- **`test_ranks_the_requested_article_above_its_near_duplicate`** — asked for 24-B, the
+  literally-named article must outrank 24-A. If BM25 stops contributing to the fusion,
+  this is what catches it.
+- **`test_trailing_punctuation_stays_attached`** — pins a *known limitation* rather than a
+  feature, so the naive tokeniser's cost stays visible instead of being rediscovered later.
+
 ### Docker / Hugging Face Spaces
 
 The [`Dockerfile`](Dockerfile) builds the indexes at image-build time and serves on port
@@ -262,9 +294,15 @@ These are real, observed in the traces above, and not papered over:
    context deliberately does not.
 6. **Indexes are loaded once at import.** There is no hot reload and no incremental
    indexing — rebuilding is a full re-embed of the corpus.
-7. **No evaluation harness.** Retrieval quality is argued from traces and worked examples,
-   not measured against a labelled query set. Adding recall@k / MRR over a small gold set
-   would be the first thing to do next.
+7. **No evaluation harness.** The test suite pins retrieval *behaviour* (the right article
+   outranks its near-duplicate) but not retrieval *quality* — there is no labelled query
+   set and no recall@k / MRR / nDCG numbers. That is the first thing to add next.
+
+---
+
+## License
+
+[MIT](LICENSE)
 
 ---
 
@@ -272,6 +310,7 @@ These are real, observed in the traces above, and not papered over:
 
 ```text
 agent.py             LangGraph state machine — the 4 nodes + the router
+tests/               29 tests — RRF logic, chunking, tokenisation, real retrieval
 retriever.py         HybridRetriever: BM25 ∥ FAISS → RRF
 indexer.py           Corpus → chunks → FAISS index + pickled BM25
 main.py              FastAPI app: chat UI, /research, /health
